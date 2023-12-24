@@ -11,23 +11,22 @@ function guessingGame() {
 
         if (isNaN(userGuess)) {
             alert("Введи число!");
-            askUser(); 
+            askUser();
             return;
         }
 
-        const guess = parseInt(userGuess);
-
-        if (guess === secretNumber) {
+        if (parseInt(userGuess) === secretNumber) {
             alert("Поздравляю, Вы угадали!!!");
-        } else if (guess > secretNumber) {
+        } else if (parseInt(userGuess) > secretNumber) {
             alert("Загаданное число меньше");
-            askUser(); 
+            askUser();
         } else {
             alert("Загаданное число больше");
-            askUser(); 
+            askUser();
         }
     }
 
     askUser();
 }
+
 guessingGame();
