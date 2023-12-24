@@ -1,22 +1,22 @@
-var title = prompt("Как называется ваш проект?");
-var screens = prompt("Какие типы экранов нужно разработать? (Пример: Простые, Сложные, Интерактивные)");
-var screenPrice = parseFloat(prompt("Сколько будет стоить данная работа? (Пример: 12000)"));
-var rollback = parseFloat(prompt("Какой процент отката посреднику предусмотрен? (Пример: 10)"));
-var adaptive = confirm("Нужен ли адаптив на сайте?");
+let title = prompt("Как называется ваш проект?");
+let screens = prompt("Какие типы экранов нужно разработать? (Пример: Простые, Сложные, Интерактивные)");
+let screenPrice = parseFloat(prompt("Сколько будет стоить данная работа? (Пример: 12000)"));
+let rollback = parseFloat(prompt("Какой процент отката посреднику предусмотрен? (Пример: 10)"));
+let adaptive = confirm("Нужен ли адаптив на сайте?");
 
-var service1 = prompt("Какой дополнительный тип услуги нужен?");
-var servicePrice1 = parseFloat(prompt("Сколько будет стоить " + service1 + "?"));
-var service2 = prompt("Какой еще дополнительный тип услуги нужен?");
-var servicePrice2 = parseFloat(prompt("Сколько будет стоить " + service2 + "?"));
+let service1 = prompt("Какой дополнительный тип услуги нужен?");
+let servicePrice1 = parseFloat(prompt("Сколько будет стоить " + service1 + "?"));
+let service2 = prompt("Какой еще дополнительный тип услуги нужен?");
+let servicePrice2 = parseFloat(prompt("Сколько будет стоить " + service2 + "?"));
 
-var getAllServicePrices = function () {
+let getAllServicePrices = function () {
     return servicePrice1 + servicePrice2;
 };
 
 function getFullPrice() {
     return screenPrice + getAllServicePrices();
 }
-var fullPrice = getFullPrice(); 
+let fullPrice = getFullPrice(); 
 
 console.clear(); 
 
