@@ -1,11 +1,9 @@
 let title, screens, screenPrice, rollback, adaptive, service1, servicePrice1, service2, servicePrice2;
 
-// Функция для проверки, является ли строка текстом
 function isText(input) {
     return isNaN(parseFloat(input)) && !isFinite(input);
 }
 
-// Функция для проверки, является ли строка числом
 function isNumber(input) {
     return !isNaN(parseFloat(input)) && isFinite(input);
 }
