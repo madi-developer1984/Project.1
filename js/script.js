@@ -1,29 +1,50 @@
-const calculatorTitle = document.getElementsByTagName('h1')[0];
+document.addEventListener("DOMContentLoaded", function () {
+    // Восстановить порядок книг
+    const booksContainer = document.querySelector('.books');
+    const books = Array.from(booksContainer.querySelectorAll('.book'));
+    books.sort((a, b) => {
+        const aTitle = a.querySelector('h2').textContent;
+        const bTitle = b.querySelector('h2').textContent;
+        return aTitle.localeCompare(bTitle);
+    });
+    books.forEach(book => booksContainer.appendChild(book));
 
-const calculateBtns = document.getElementsByClassName('handler_btn');
-const calculateBtn = calculateBtns[0];
-const resetBtn = calculateBtns[1];
+    // Заменить картинку заднего фона
+    document.body.style.backgroundImage = 'url("image/open_book.jpg")';
 
-const plusBtn = document.querySelector('.screen-btn');
+    // Исправить заголовок в книге 3
+    const book3Title = document.querySelector('.book:nth-child(4) h2 a');
+    if (book3Title) {
+        book3Title.textContent = "Книга 3. this и Прототипы Объектов";
+    }
 
-const percentItems = document.querySelectorAll('.other-items.percent');
-const numberItems = document.querySelectorAll('.other-items.number');
+    // Удалить рекламу со страницы
+    const advElement = document.querySelector('.adv');
+    if (advElement) {
+        advElement.remove();
+    }
 
-const rangeInput = document.querySelector('.rollback input[type="range"]');
+    // Восстановить порядок глав во второй и пятой книге
+    const reorderChapters = (bookIndex) => {
+        const book = document.querySelector(`.book:nth-child(${bookIndex})`);
+        const chaptersContainer = book.querySelector('ul');
+        const chapters = Array.from(chaptersContainer.children);
+        chapters.sort((a, b,) => {
+            const aText = a.textContent.trim();
+            const bText = b.textContent.trim();
+            return aText.localeCompare(bText, undefined, { numeric: true });
+        });
+        chapters.forEach(chapter => chaptersContainer.appendChild(chapter));
+    };
 
-const rangeValueSpan = document.querySelector('.rollback .range-value');
+    reorderChapters(2);
+    reorderChapters(5);
 
-const totalInputs = document.getElementsByClassName('total-input');
-
-let screenBlocks = document.querySelectorAll('.screen');
-
-console.log('Calculator Title:', calculatorTitle);
-console.log('Calculate Button:', calculateBtn);
-console.log('Reset Button:', resetBtn);
-console.log('Plus Button:', plusBtn);
-console.log('Percent Items:', percentItems);
-console.log('Number Items:', numberItems);
-console.log('Range Input:', rangeInput);
-console.log('Range Value Span:', rangeValueSpan);
-console.log('Total Inputs:', totalInputs);
-console.log('Screen Blocks:', screenBlocks);
+    // В шестой книге добавить главу “Глава 8: За пределами ES6”
+    const book6Chapters = document.querySelector('.book:nth-child(6) ul');
+    if (book6Chapters) {
+        const newChapter = document.createElement('li');
+        newChapter.textContent = 'Глава 8: За пределами ES6';
+        book6Chapters.appendChild(newChapter);
+    }
+});
