@@ -63,7 +63,7 @@ const appData = {
             const input = screen.querySelector('input');
             const selectName = select.options[select.selectedIndex].textContent;
 
-            // Проверяем, что значения выбраны
+            
             if (select.value && input.value) {
                 appData.screens.push({
                     id: index,
