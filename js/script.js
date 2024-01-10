@@ -1,6 +1,6 @@
 'use strict';
 
-// Получаем элементы DOM
+
 const title = document.getElementsByTagName('h1')[0];
 const buttonPlus = document.querySelector('.screen-btn');
 const otherItemsPercent = document.querySelectorAll('.other-items.percent');
@@ -63,7 +63,7 @@ const appData = {
             const input = screen.querySelector('input');
             const selectName = select.options[select.selectedIndex].textContent;
 
-            
+
             if (select.value && input.value) {
                 appData.screens.push({
                     id: index,
