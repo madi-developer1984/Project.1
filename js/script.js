@@ -1,50 +1,124 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Восстановить порядок книг
-    const booksContainer = document.querySelector('.books');
-    const books = Array.from(booksContainer.querySelectorAll('.book'));
-    books.sort((a, b) => {
-        const aTitle = a.querySelector('h2').textContent;
-        const bTitle = b.querySelector('h2').textContent;
-        return aTitle.localeCompare(bTitle);
-    });
-    books.forEach(book => booksContainer.appendChild(book));
+'use strict';
 
-    // Заменить картинку заднего фона
-    document.body.style.backgroundImage = 'url("image/open_book.jpg")';
+// Получаем элементы DOM
+const title = document.getElementsByTagName('h1')[0];
+const buttonPlus = document.querySelector('.screen-btn');
+const otherItemsPercent = document.querySelectorAll('.other-items.percent');
+const otherItemsNumber = document.querySelectorAll('.other-items.number');
 
-    // Исправить заголовок в книге 3
-    const book3Title = document.querySelector('.book:nth-child(4) h2 a');
-    if (book3Title) {
-        book3Title.textContent = "Книга 3. this и Прототипы Объектов";
-    }
+const inputRange = document.querySelector('.rollback input');
+const inputRangeValue = document.querySelector('.rollback .range-value');
 
-    // Удалить рекламу со страницы
-    const advElement = document.querySelector('.adv');
-    if (advElement) {
-        advElement.remove();
-    }
+const startBtn = document.getElementById('start');
+const resetBtn = document.getElementById('reset');
 
-    // Восстановить порядок глав во второй и пятой книге
-    const reorderChapters = (bookIndex) => {
-        const book = document.querySelector(`.book:nth-child(${bookIndex})`);
-        const chaptersContainer = book.querySelector('ul');
-        const chapters = Array.from(chaptersContainer.children);
-        chapters.sort((a, b,) => {
-            const aText = a.textContent.trim();
-            const bText = b.textContent.trim();
-            return aText.localeCompare(bText, undefined, { numeric: true });
+const total = document.getElementById('total');
+const totalCount = document.getElementById('total-count');
+const totalCountOther = document.getElementById('total-count-other');
+const fullTotalCount = document.getElementById('total-full-count');
+const totalCountRollback = document.getElementById('total-count-rollback');
+
+let screens = document.querySelectorAll('.screen');
+
+const appData = {
+    title: '',
+    screens: [],
+    screenPrice: 0,
+    adaptive: true,
+    rollback: 10,
+    servicePricesPercent: 0,
+    servicePricesNumber: 0,
+    fullPrice: 0,
+    servicePercentPrice: 0,
+    servicesPercent: {},
+    servicesNumber: {},
+    init: function () {
+        appData.addTitle();
+        startBtn.addEventListener('click', appData.start);
+        buttonPlus.addEventListener('click', appData.addScreenBlock);
+        inputRange.addEventListener('input', appData.handleRangeChange);
+    },
+    addTitle: function () {
+        document.title = title.textContent;
+    },
+    start: function () {
+        appData.addScreens();
+        appData.addServices();
+        appData.addPrices();
+        appData.showResult();
+    },
+    showResult: function () {
+        total.value = appData.screenPrice;
+        totalCount.value = appData.getTotalScreensCount();
+        totalCountOther.value = appData.servicePricesPercent + appData.servicePricesNumber;
+        fullTotalCount.value = appData.fullPrice;
+        totalCountRollback.value = appData.servicePercentPrice;
+    },
+    addScreens: function () {
+        screens = document.querySelectorAll('.screen');
+        appData.screens = [];
+
+        screens.forEach(function (screen, index) {
+            const select = screen.querySelector('select');
+            const input = screen.querySelector('input');
+            const selectName = select.options[select.selectedIndex].textContent;
+
+            // Проверяем, что значения выбраны
+            if (select.value && input.value) {
+                appData.screens.push({
+                    id: index,
+                    name: selectName,
+                    price: +select.value * +input.value
+                });
+            }
         });
-        chapters.forEach(chapter => chaptersContainer.appendChild(chapter));
-    };
+    },
+    getTotalScreensCount: function () {
+        return appData.screens.reduce((total, screen) => total + +screen.price, 0);
+    },
+    addServices: function () {
+        appData.servicesPercent = {};
+        appData.servicesNumber = {};
 
-    reorderChapters(2);
-    reorderChapters(5);
+        otherItemsPercent.forEach(function (item) {
+            const check = item.querySelector('input[type=checkbox]');
+            const label = item.querySelector('label');
+            const input = item.querySelector('input[type=text]');
 
-    // В шестой книге добавить главу “Глава 8: За пределами ES6”
-    const book6Chapters = document.querySelector('.book:nth-child(6) ul');
-    if (book6Chapters) {
-        const newChapter = document.createElement('li');
-        newChapter.textContent = 'Глава 8: За пределами ES6';
-        book6Chapters.appendChild(newChapter);
-    }
-});
+            if (check.checked) {
+                appData.servicesPercent[label.textContent] = +input.value;
+            }
+        });
+
+        otherItemsNumber.forEach(function (item) {
+            const check = item.querySelector('input[type=checkbox]');
+            const label = item.querySelector('label');
+            const input = item.querySelector('input[type=text]');
+
+            if (check.checked) {
+                appData.servicesNumber[label.textContent] = +input.value;
+            }
+        });
+    },
+    addScreenBlock: function () {
+        const cloneScreen = screens[0].cloneNode(true);
+        screens[screens.length - 1].after(cloneScreen);
+    },
+    addPrices: function () {
+        appData.screenPrice = appData.getTotalScreensCount();
+        appData.servicePricesNumber = Object.values(appData.servicesNumber).reduce((total, value) => total + value, 0);
+        appData.servicePricesPercent = Object.values(appData.servicesPercent).reduce((total, value) => total + appData.screenPrice * (value / 100), 0);
+        appData.fullPrice = appData.screenPrice + appData.servicePricesNumber + appData.servicePricesPercent;
+        appData.servicePercentPrice = appData.fullPrice - (appData.fullPrice * (appData.rollback / 100));
+    },
+    handleRangeChange: function () {
+        appData.rollback = +inputRange.value;
+        inputRangeValue.textContent = appData.rollback + '%';
+
+        appData.addPrices();
+
+        appData.showResult();
+    },
+};
+
+appData.init();
